@@ -19,8 +19,6 @@ Simple Tic-Tac-Toe Command Line Multiplayer Game made with NodeJS.
 
 ## Getting Started
 
-### Prerequisites
-
 Clone the project
 
 ```bash
