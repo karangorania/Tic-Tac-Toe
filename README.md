@@ -49,7 +49,7 @@ Open another Cli - You are Player X
   cd client
 ```
 
-Start the game
+Start the Game
 
 ```bash
   node client
@@ -61,7 +61,7 @@ Open another Cli - You are Player O
   cd client
 ```
 
-Start the game
+Start the Game
 
 ```bash
   node client
