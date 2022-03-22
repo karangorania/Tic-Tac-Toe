@@ -69,4 +69,4 @@ Start the game
 
 ## Demo Video
 
-video: https://youtube.com/embed/zzFCfukGmP0
+video: https://www.youtube.com/embed/zzFCfukGmP0
