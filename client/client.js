@@ -1,3 +1,9 @@
+/*
+Chalk 
+Figlet
+Inquirer 
+*/
+
 import chalk from 'chalk';
 import figlet from 'figlet';
 
@@ -6,6 +12,7 @@ import inquirer from 'inquirer';
 
 const socket = socketIOClient('http://127.0.0.1:5050');
 
+// Connection to the server is esatablish.
 socket.on('connect', () => {
   console.log(chalk.green('connected to 127.0.0.1 5050'));
   console.log(chalk.red('=== start game ==='));
@@ -21,18 +28,23 @@ socket.on('assign', (assign) => {
   console.log(assign.msg);
 });
 
+// It will give turn to Player X or O
 socket.on('takeTurn', (data) => {
   startGame(data.player);
 });
+
+// take a input from another player
 socket.on('attack', (value) => {
   markBoard(value.value, value.player);
   printBoard();
 });
 
+// It will declare winner & draw
 socket.on('endGame', (data) => {
   console.log(data.winner);
 });
 
+// It will show the welcome message TIC TAC TOE
 console.log(
   chalk.yellow(figlet.textSync('Tic-Tac-Toe', { horizontalLayout: 'full' }))
 );
@@ -64,12 +76,12 @@ const winningCondition = [
   [3, 5, 7], //cross
 ];
 
-//Mark the indicated position with the indicated letter
+// It will add mark to the board
 const markBoard = (position, letter) => {
   board[position] = letter.toUpperCase();
 };
 
-//Output the board to the console
+// Print the board to the console
 const printBoard = () => {
   console.log('                                         ');
   console.log(
@@ -127,8 +139,6 @@ const selectWinnner = (player) => {
   return false;
 };
 
-//Check to see if the game ends in a draw by verifying all the tiles are filled. This function is only ever called after selectWinnner to guarantee it will not be looking at a board state that contains a winning condition.
-
 // It will check for draw by verifying all the tiles are filled, then it will execute the game is draw.
 const selectDraw = () => {
   for (const tile in board) {
@@ -139,14 +149,13 @@ const selectDraw = () => {
   return true;
 };
 
-//Runs the game by prompting the players for their input and calling the rest of the game controlling functions. The Inquirer package provides input validation to ensure that players enter only numbers 1-9.
+// Ask player to select the letter to place on the board
 
 const startGame = (player) => {
   inquirer
     .prompt([
       {
         name: 'playerMove',
-        // type: 'number',
         type: 'string',
         message: 'Player ' + player + ': enter a number 1-9',
         validate: (value) => {
@@ -162,7 +171,7 @@ const startGame = (player) => {
             value === '9'
           ) {
             if (validInput(parseInt(value))) {
-              // Here we have use parseInt to convert string to int
+              // It will send the input to the server
               socket.emit('input', { input: value, player: player });
               return true;
             } else {
@@ -170,7 +179,7 @@ const startGame = (player) => {
             }
           } else {
             if (value === 'r') {
-              // we have taken 'r' value for resing the game
+              // we have taken 'r' value for resign the game
               socket.emit('playerLeft', { winner: ' Opponent left You Wins!' });
               return 'You left !';
             }
@@ -183,14 +192,16 @@ const startGame = (player) => {
       markBoard(response.playerMove, player);
       printBoard();
       if (selectWinnner(player)) {
+        // It will send the winner to the server
         socket.emit('endGame', { winner: `${player} wins!` });
         return;
       }
       if (selectDraw()) {
+        // It will send the draw to the server
         socket.emit('endGame', { winner: 'Game is a draw.' });
         return;
       }
-
+      // It will send the turn to the server and give turn to the another player X or O
       socket.emit('giveTurn', { player: player });
     });
 };

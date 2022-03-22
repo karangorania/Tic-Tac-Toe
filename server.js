@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
   if (players.X === null) {
     players.X = socket.id;
     io.sockets.to(players.X).emit('assign', { letter: 'X', msg: '' });
-    io.sockets.to(players.X).emit('takeTurn', { player: 'X' }); // To take turn
+    io.sockets.to(players.X).emit('takeTurn', { player: 'X' }); // First player X will take turn
   } else {
     players.O = socket.id;
     io.sockets
@@ -35,6 +35,7 @@ io.on('connection', (socket) => {
     });
   });
 
+  // Give turn to either Player X or O
   socket.on('giveTurn', (input) => {
     if (input.player === 'X') {
       players.turn = 'O';
@@ -45,6 +46,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('takeTurn', { player: players.turn });
   });
 
+  // It will check the winner of the game
   socket.on('endGame', (data) => {
     io.sockets.emit('endGame', { winner: data.winner });
     players.winner = data.winner;
@@ -54,8 +56,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('endGame', { winner: data.winner });
   });
 
-  // Disconnect the game if player left the game
-
+  // Disconnect the game if player X or O left the game.
   socket.on('disconnect', () => {
     io.sockets.emit('endGame', {
       winner: 'Oppenent player left',
