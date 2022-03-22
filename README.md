@@ -66,3 +66,7 @@ Start the game
 ```bash
   node client
 ```
+
+## Demo Video
+
+video: https://youtube.com/embed/zzFCfukGmP0
