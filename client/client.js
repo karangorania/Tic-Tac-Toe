@@ -183,7 +183,7 @@ const startGame = (player) => {
               socket.emit('playerLeft', { winner: ' Opponent left You Wins!' });
               return 'You left !';
             }
-            return 'Enter a number';
+            return ` Enter a number between 1 to 9 or press r to resign \n   press uppar arrow to rename number `;
           }
         },
       },
